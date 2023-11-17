@@ -1,6 +1,7 @@
 package it.unibo.deathnote.api;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class MyDeathNote implements DeathNote{
@@ -8,8 +9,7 @@ public class MyDeathNote implements DeathNote{
     private long initialTime;
     private long finalTime;
     private ArrayList<ArrayList<String>> nameList=new ArrayList<ArrayList<String>>();
-
-
+    
     public MyDeathNote(){
 
     }
@@ -37,30 +37,26 @@ public class MyDeathNote implements DeathNote{
         }else{
             ArrayList<String> newInfo=new ArrayList<String>(3);
             newInfo.add(0, name);
+            newInfo.add(1, "heart attack");
+            newInfo.add(2, "");
             this.nameList.add(newInfo);
             this.nameCount++;
         }
         this.initialTime=System.currentTimeMillis();
     }
-
     @Override
     public boolean writeDeathCause(String cause) {
-        if (this.nameCount==0 || cause.equals(null)) {
+        if (this.nameCount==0 || cause.equals("")) {
             throw new IllegalStateException("No noun registered or the cause specified is null");
         }
         this.finalTime=System.currentTimeMillis();
         if ((this.finalTime-this.initialTime)<40) {
-            if (cause.equals("")) {
-                int index = this.getNameList().lastIndexOf(this.getNameList());
-                ArrayList<String> deathInfo= new ArrayList<String>();
-                deathInfo=this.getNameList().get(index);
-                String deathCause= new String();
-                deathCause=deathInfo.get(1);
-                deathCause="heart attack";
-            }else{
-                int index = this.getNameList().lastIndexOf(this.getNameList());
-                this.getNameList().get(index).set(1, cause);
+            ArrayList<String> deathInfo=new ArrayList<String>(3);
+            Iterator<ArrayList<String>> myDeathIterator=this.getNameList().iterator();
+            while (myDeathIterator.hasNext()) {
+                deathInfo=myDeathIterator.next();
             }
+            deathInfo.add(1, cause);
             return true;
         }else{
             return false;
@@ -69,13 +65,17 @@ public class MyDeathNote implements DeathNote{
 
     @Override
     public boolean writeDetails(String details) {
-        if (this.nameCount==0 || details.equals(null)) {
+        if (this.nameCount==0 || details.equals("")) {
             throw new IllegalStateException("No noun registered or the detail specified is null");
         }
         this.finalTime=System.currentTimeMillis();
         if ((this.finalTime-this.initialTime)<6040) {
-            int index = this.getNameList().lastIndexOf(this.getNameList());
-            this.getNameList().get(index).set(2, details);
+            ArrayList<String> deathInfo=new ArrayList<String>(3);
+            Iterator<ArrayList<String>> myDeathIterator=this.getNameList().iterator();
+            while (myDeathIterator.hasNext()) {
+                deathInfo=myDeathIterator.next();
+            }
+            deathInfo.add(2, details);
             return true;
         }else{
             return false;
@@ -87,7 +87,7 @@ public class MyDeathNote implements DeathNote{
         if (isNameWritten(name)){
             for (int i = 0; i < nameList.size(); i++) {
                 if (this.nameList.get(i).get(0).equals(name)) {
-                    if(this.nameList.get(i).get(1).equals(null)){
+                    if(this.nameList.get(i).get(1).equals(null) || this.nameList.get(i).get(1).equals("")){
                         return "heart attack";
                     }else{
                         return nameList.get(i).get(1);
@@ -95,7 +95,7 @@ public class MyDeathNote implements DeathNote{
                 }
             }
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Death cause can't be geted");
     }
 
     @Override
@@ -111,7 +111,7 @@ public class MyDeathNote implements DeathNote{
                 }
             }
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Death details can't be geted");
     }
 
     @Override

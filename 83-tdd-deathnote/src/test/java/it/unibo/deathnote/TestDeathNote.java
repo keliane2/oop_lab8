@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -144,6 +143,7 @@ public class TestDeathNote {
         assertEquals("accident",kelyDeathNote.getDeathCause("Carla"));
         try {
             kelyDeathNote.getDeathCause("alfa");
+            fail();
         } catch (IllegalArgumentException e) {
             assertNotEquals("", e.getMessage());
             assertNotNull(e.getMessage());
@@ -151,7 +151,7 @@ public class TestDeathNote {
         }
     }
 
-    /*@Test
+    @Test
     public void testGetDeathDetails(){
         kelyDeathNote.writeName("Aubin");
         assertEquals("heart attack",kelyDeathNote.getDeathCause("Aubin"));
@@ -160,12 +160,13 @@ public class TestDeathNote {
         assertEquals("accident",kelyDeathNote.getDeathCause("Carla"));
         try {
             kelyDeathNote.getDeathCause("alfa");
+            fail();
         } catch (IllegalArgumentException e) {
             assertNotEquals("", e.getMessage());
             assertNotNull(e.getMessage());
             assertTrue(e.getMessage().length()>0);
         }
-    }*/
+    }
 
     @Test
     public void testIsNameWritten(){

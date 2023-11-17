@@ -5,54 +5,63 @@ import it.unibo.bank.api.BankAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-/**
- * Test class for the {@link StrictBankAccount} class.
- */
-class TestStrictBankAccount {
+public class TestStrictBankAccount {
 
-    // Create a new AccountHolder and a StrictBankAccount for it each time tests are executed.
-    private AccountHolder mRossi;
-    private BankAccount bankAccount;
+    private final static int INITIAL_AMOUNT = 100;
 
-    /**
-     * Prepare the tests.
-     */
+    // 1. Create a new AccountHolder and a StrictBankAccount for it each time tests are executed.
+    private AccountHolder mRossi=new AccountHolder("Mario", "Rossi", 01);
+    private BankAccount bankAccount=new StrictBankAccount(mRossi, INITIAL_AMOUNT);
+
     @BeforeEach
     public void setUp() {
-        fail("To be implemented");
+        AccountHolder mRossi=new AccountHolder("Mario", "Rossi", 01);
+        BankAccount bankAccount=new StrictBankAccount(mRossi, INITIAL_AMOUNT);
     }
 
-    /**
-     * Test the initial state of the StrictBankAccount.
-     */
+    // 2. Test the initial state of the StrictBankAccount
     @Test
     public void testInitialization() {
-        fail("To be implemented");
+        assertEquals(this.mRossi, this.bankAccount.getAccountHolder());
+        assertEquals(INITIAL_AMOUNT, this.bankAccount.getBalance());
+        assertEquals(0, this.bankAccount.getTransactionsCount());
+        //fail("Bad initial state");
     }
 
-    /**
-     * Perform a deposit of 100€, compute the management fees, and check that the balance is correctly reduced.
-     */
+
+    // 3. Perform a deposit of 100€, compute the management fees, and check that the balance is correctly reduced.
     @Test
     public void testManagementFees() {
-        fail("To be implemented");
+        this.bankAccount.deposit(mRossi.getUserID(), 100);
+        this.bankAccount.chargeManagementFees(mRossi.getUserID());
+        assertEquals(0, this.bankAccount.getTransactionsCount());
+        assertEquals(this.bankAccount.getBalance(), INITIAL_AMOUNT+100-StrictBankAccount.MANAGEMENT_FEE-StrictBankAccount.TRANSACTION_FEE);
+        //fail("TestManagementFees failed");
     }
 
-    /**
-     * Test that withdrawing a negative amount causes a failure.
-     */
+    // 4. Test the withdraw of a negative value
     @Test
     public void testNegativeWithdraw() {
-        fail("To be implemented");
+        final int NEGATIVE_VALUE=-15;
+        try {
+            this.bankAccount.withdraw(mRossi.getUserID(), NEGATIVE_VALUE);
+            fail();
+        } catch (IllegalArgumentException e) {
+            assertEquals("Cannot withdraw a negative amount",e.getMessage());
+        }
     }
 
-    /**
-     * Test that withdrawing more money than it is in the account is not allowed.
-     */
+    // 5. Test withdrawing more money than it is in the account
     @Test
     public void testWithdrawingTooMuch() {
-        fail("To be implemented");
+        try {
+            this.bankAccount.withdraw(mRossi.getUserID(), this.bankAccount.getBalance()*2);
+            fail();
+        } catch (IllegalArgumentException e) {
+            assertEquals("Insufficient balance", e.getMessage());
+        }
     }
 }
